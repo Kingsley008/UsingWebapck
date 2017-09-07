@@ -1,14 +1,31 @@
 import utils from '../../../utils/utils.js';
 import conf from '../../../conf/conf.js';
+import Animation from '../../animation.js';
 
-export  default class Player {
+export  default class Player extends Animation{
     constructor(game, x, y) {
+        super(game);
         this.game = game;
         this.x = x;
         this.y = y;
         this.speed = 5;
-        this.actions = {};
-        this.initAnimation();
+        // 设置动画字典
+        this.actionNames = {
+            up:'fly',
+            adown:'fly',
+            ddown:'fly',
+        };
+
+        this.initAnimation(
+            [
+            {
+            name:'fly',
+            length:3,
+            imageName:'bird',
+            }
+            ],'fly'
+        );
+
         this.h = this.img.height;
         this.w = this.img.width;
         this.rotation = 0;
@@ -17,43 +34,6 @@ export  default class Player {
         this.vg = 25;
         this.vy = 0;
         this.alive = true;
-    }
-
-    initAnimation() {
-        this.countdown = 5;
-        this.index = 0;
-        this.actions.fly = [];
-        this.actions.walk = [];
-        this.actionNames = {
-            up:'fly',
-            adown:'fly',
-            ddown:'fly',
-        };
-        this.loadAnimation(3,'fly','bird');
-        this.currentAction = this.actions.fly;
-        this.img = this.game.getImgByName(this.currentAction[this.index]);
-    }
-
-    loadAnimation(num,arrName,actionName){
-        for (let i = 1; i <= num; i++) {
-            this.actions[arrName].push(actionName + i)
-        }
-    }
-
-    changeActions() {
-
-        if(this.countdown < 0){
-           // this.index = this.index % this.currentAction.length;
-            if(this.index >= this.currentAction.length -1) {
-                this.index = 0;
-            }
-            this.img = this.game.getImgByName(this.currentAction[this.index]);
-
-            this.countdown = 5;
-
-            this.index++;
-        }
-
     }
 
     draw(){
@@ -102,9 +82,6 @@ export  default class Player {
        window.audio.play();
     }
 
-    changeCurrentAction(name) {
-        this.currentAction = this.actions[name];
-    }
 
     update() {
 

@@ -1248,15 +1248,15 @@ var _player = __webpack_require__(14);
 
 var _player2 = _interopRequireDefault(_player);
 
-var _pipe = __webpack_require__(15);
+var _pipe = __webpack_require__(16);
 
 var _pipe2 = _interopRequireDefault(_pipe);
 
-var _score = __webpack_require__(16);
+var _score = __webpack_require__(17);
 
 var _score2 = _interopRequireDefault(_score);
 
-var _scene_end = __webpack_require__(17);
+var _scene_end = __webpack_require__(18);
 
 var _scene_end2 = _interopRequireDefault(_scene_end);
 
@@ -1264,7 +1264,7 @@ var _image = __webpack_require__(0);
 
 var _image2 = _interopRequireDefault(_image);
 
-var _floor = __webpack_require__(18);
+var _floor = __webpack_require__(19);
 
 var _floor2 = _interopRequireDefault(_floor);
 
@@ -1397,70 +1397,55 @@ var _conf = __webpack_require__(1);
 
 var _conf2 = _interopRequireDefault(_conf);
 
+var _animation = __webpack_require__(15);
+
+var _animation2 = _interopRequireDefault(_animation);
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
-var Player = function () {
+function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+var Player = function (_Animation) {
+    _inherits(Player, _Animation);
+
     function Player(game, x, y) {
         _classCallCheck(this, Player);
 
-        this.game = game;
-        this.x = x;
-        this.y = y;
-        this.speed = 5;
-        this.actions = {};
-        this.initAnimation();
-        this.h = this.img.height;
-        this.w = this.img.width;
-        this.rotation = 0;
-        this.jumpH = 12;
+        var _this = _possibleConstructorReturn(this, (Player.__proto__ || Object.getPrototypeOf(Player)).call(this, game));
+
+        _this.game = game;
+        _this.x = x;
+        _this.y = y;
+        _this.speed = 5;
+        // 设置动画字典
+        _this.actionNames = {
+            up: 'fly',
+            adown: 'fly',
+            ddown: 'fly'
+        };
+
+        _this.initAnimation([{
+            name: 'fly',
+            length: 3,
+            imageName: 'bird'
+        }], 'fly');
+
+        _this.h = _this.img.height;
+        _this.w = _this.img.width;
+        _this.rotation = 0;
+        _this.jumpH = 12;
         // 重力和加速度
-        this.vg = 25;
-        this.vy = 0;
-        this.alive = true;
+        _this.vg = 25;
+        _this.vy = 0;
+        _this.alive = true;
+        return _this;
     }
 
     _createClass(Player, [{
-        key: 'initAnimation',
-        value: function initAnimation() {
-            this.countdown = 5;
-            this.index = 0;
-            this.actions.fly = [];
-            this.actions.walk = [];
-            this.actionNames = {
-                up: 'fly',
-                adown: 'fly',
-                ddown: 'fly'
-            };
-            this.loadAnimation(3, 'fly', 'bird');
-            this.currentAction = this.actions.fly;
-            this.img = this.game.getImgByName(this.currentAction[this.index]);
-        }
-    }, {
-        key: 'loadAnimation',
-        value: function loadAnimation(num, arrName, actionName) {
-            for (var i = 1; i <= num; i++) {
-                this.actions[arrName].push(actionName + i);
-            }
-        }
-    }, {
-        key: 'changeActions',
-        value: function changeActions() {
-
-            if (this.countdown < 0) {
-                // this.index = this.index % this.currentAction.length;
-                if (this.index >= this.currentAction.length - 1) {
-                    this.index = 0;
-                }
-                this.img = this.game.getImgByName(this.currentAction[this.index]);
-
-                this.countdown = 5;
-
-                this.index++;
-            }
-        }
-    }, {
         key: 'draw',
         value: function draw() {
             this.changeActions();
@@ -1510,11 +1495,6 @@ var Player = function () {
             window.audio.play();
         }
     }, {
-        key: 'changeCurrentAction',
-        value: function changeCurrentAction(name) {
-            this.currentAction = this.actions[name];
-        }
-    }, {
         key: 'update',
         value: function update() {
 
@@ -1545,12 +1525,107 @@ var Player = function () {
     }]);
 
     return Player;
-}();
+}(_animation2.default);
 
 exports.default = Player;
 
 /***/ }),
 /* 15 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+var Animation = function () {
+    function Animation(game) {
+        _classCallCheck(this, Animation);
+
+        this.game = game;
+        this.actions = {};
+        // 字典 需要子类初始化
+        // 数据格式：this.actionNames = {
+        //     up:'fly',
+        //     adown:'fly',
+        //     ddown:'fly',
+        // };
+        this.actionNames = {};
+    }
+
+    /**
+     * @param option 为数组 存放 对象的格式  每个对象代表一个对应的动画
+     *   option =  [{
+     *        name:'fly',
+     *        length:3,
+     *        imageName:'bird',
+     *        }]
+     * @param initAction 初始动画
+     *
+     *
+     *
+    **/
+
+
+    _createClass(Animation, [{
+        key: "initAnimation",
+        value: function initAnimation(option, initAction) {
+            this.countdown = 5;
+            this.index = 0;
+            for (var i = 0; i < option.length; i++) {
+                this.actions[option[i].name] = this.loadAnimation(option[i].length, option[i].imageName);
+            }
+
+            this.currentAction = this.actions[initAction];
+            // 更新到初始动画的第一帧
+            console.log(this.currentAction);
+            this.img = this.game.getImgByName(this.currentAction[this.index]);
+        }
+    }, {
+        key: "loadAnimation",
+        value: function loadAnimation(length, imgName) {
+            var arr = [];
+            for (var i = 1; i <= length; i++) {
+                arr.push(imgName + i);
+            }
+            return arr;
+        }
+    }, {
+        key: "changeActions",
+        value: function changeActions() {
+
+            if (this.countdown < 0) {
+                // this.index = this.index % this.currentAction.length;
+                if (this.index >= this.currentAction.length - 1) {
+                    this.index = 0;
+                }
+                this.img = this.game.getImgByName(this.currentAction[this.index]);
+
+                this.countdown = 5;
+
+                this.index++;
+            }
+        }
+    }, {
+        key: "changeCurrentAction",
+        value: function changeCurrentAction(name) {
+            this.currentAction = this.actions[name];
+        }
+    }]);
+
+    return Animation;
+}();
+
+exports.default = Animation;
+
+/***/ }),
+/* 16 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1671,7 +1746,7 @@ var Pipe = function () {
 exports.default = Pipe;
 
 /***/ }),
-/* 16 */
+/* 17 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1712,7 +1787,7 @@ var Score = function () {
 exports.default = Score;
 
 /***/ }),
-/* 17 */
+/* 18 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1768,7 +1843,7 @@ var ScenceEnd = function (_Scene) {
 exports.default = ScenceEnd;
 
 /***/ }),
-/* 18 */
+/* 19 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
